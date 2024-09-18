@@ -127,6 +127,12 @@
                 addBook(title, author, datePublished, ISBN, genre);
                 console.log("Sent book to server!");
                 socket.emit("getBooks");
+
+                document.getElementById("title").value = "";
+                document.getElementById("author").value = "";
+                document.getElementById("datePublished").value = "";
+                document.getElementById("ISBN").value = "";
+                document.getElementById("Genre").value = "";
             });
 
             document.getElementById("clearFilters").addEventListener("click", function(event) {
@@ -157,17 +163,18 @@
                 console.log("Queried books!");
             });
 
-            function addBook(title, author, datePublished, ISBN, genre) {
+            function addBook(id, title, author, datePublished, ISBN, genre) {
                 const table = document.querySelector("table");
                 const newRow = table.insertRow();
                 
+                const idCell = newRow.insertCell(0);
+                const titleCell = newRow.insertCell(1);
+                const authorCell = newRow.insertCell(2);
+                const datePublishedCell = newRow.insertCell(3);
+                const ISBNCell = newRow.insertCell(4);
+                const genreCell = newRow.insertCell(5);
 
-                const titleCell = newRow.insertCell(0);
-                const authorCell = newRow.insertCell(1);
-                const datePublishedCell = newRow.insertCell(2);
-                const ISBNCell = newRow.insertCell(3);
-                const genreCell = newRow.insertCell(4);
-
+                idCell.textContent = id;
                 titleCell.textContent = title;
                 authorCell.textContent = author;
                 datePublishedCell.textContent = datePublished;
