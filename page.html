@@ -6,8 +6,8 @@
     <title>Book Storage</title>
 </head>
 <body>
-    <h1>Welcome to Book Storage</h1>
-    <p>This is a simple HTML page for storing book information!</p>
+    <h1>Welcome to Bookeeping!</h1>
+    <p>Enter in your books and I'll keep track!</p>
 
     <form>
         <label for="title">Title:</label><br>
@@ -17,7 +17,7 @@
         <input type="text" id="author" name="author"><br>
 
         <label for="datePublished">Date Published:</label><br>
-        <input type="text" id="datePublished" name="datePublished"><br>
+        <input type="date" id="datePublished" name="datePublished"><br>
 
         <label for="ISBN">ISBN:</label><br>
         <input type="text" id="ISBN" name="ISBN"><br>
@@ -41,6 +41,7 @@
             <option value="genre">Genre</option>
             <option value="ISBN">ISBN</option>
             <option value="author">Author</option>
+            <option value="ID">ID</option>
         </select><br>
 
         <input type="submit" id="querySubmit" value="Submit">
@@ -50,9 +51,9 @@
 
     <input type="submit" id="clearFilters" value="Clear Filters">
 
-    <br>
+    <h3>Download Data:</h3>
 
-    <input type="submit" value="Download CSV File">
+    <input type="submit" id="getCSV" value="Download CSV File">
 
     <br>
 
@@ -60,6 +61,7 @@
 
     <table>
         <tr>
+            <th>ID</th>
             <th>Title</th>
             <th>Author</th>
             <th>Date Published</th>
@@ -76,10 +78,20 @@
                 console.log("Connected to server!");
             });
             
+            socket.on("sendCSV", (csvData) => {
+                const blob = new Blob([csvData], {type: "text/csv"});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "books.csv";
+                a.click();
+                console.log("Received CSV file from server!");
+            })
+
             socket.on("sendBooks", (data) => {
                 clearBooks();
                 data.forEach(book => {
-                    addBook(book.title, book.author, book.datePublished, book.ISBN, book.genre);
+                    addBook(book.ID, book.title, book.author, book.datePublished, book.ISBN, book.genre);
                 });
                 console.log("Received books from server!");
             });
@@ -93,6 +105,16 @@
                 const ISBN = document.getElementById("ISBN").value;
                 const genre = document.getElementById("Genre").value;
 
+                //Ensure input is good
+                if(title === "" || author === "" || datePublished === "" || ISBN === "" || genre === ""){
+                    alert("Please fill in all fields");
+                    return;
+                }
+                else if (isNaN(ISBN) && ISBN.length == 13){
+                    alert("ISBN must be a number, have no letters, and be 13 digits long.");
+                    return;
+                }
+
                 const book = {
                     title: title,
                     author: author,
@@ -104,6 +126,7 @@
                 socket.emit("addBook", book);
                 addBook(title, author, datePublished, ISBN, genre);
                 console.log("Sent book to server!");
+                socket.emit("getBooks");
             });
 
             document.getElementById("clearFilters").addEventListener("click", function(event) {
@@ -111,13 +134,20 @@
                 clearFilters();
                 getBooks();
             });
+            
+            document.getElementById("getCSV").addEventListener("click", function(event) {
+                event.preventDefault();
+                socket.emit("getCSV");
+                console.log("Requested CSV file from server!");
+            });
 
             document.getElementById("querySubmit").addEventListener("click", function(event) {
                 event.preventDefault();
 
-                const query = document.getElementById("query").value;
+                var query = document.getElementById("query").value;
                 const filterType = document.getElementById("filterType").value;
-
+                query = query.toLowerCase();
+                console.log(query);
                 const filters = {
                     query: query,
                     filterType: filterType
@@ -130,6 +160,7 @@
             function addBook(title, author, datePublished, ISBN, genre) {
                 const table = document.querySelector("table");
                 const newRow = table.insertRow();
+                
 
                 const titleCell = newRow.insertCell(0);
                 const authorCell = newRow.insertCell(1);
