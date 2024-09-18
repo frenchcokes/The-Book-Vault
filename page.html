@@ -4,62 +4,82 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book Storage</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>Welcome to Bookeeping!</h1>
-    <p>Enter in your books and I'll keep track!</p>
+    <h2>Add Books</h2>
+    <p>Add your books and I'll keep track!</p>
 
     <form>
-        <label for="title">Title:</label><br>
-        <input type="text" id="title" name="title"><br>
+        <div class="elemRow">
+            <div class="field">
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title">
+            </div>
 
-        <label for="author">Author:</label><br>
-        <input type="text" id="author" name="author"><br>
+            <div class="field">
+                <label for="author">Author:</label>
+                <input type="text" id="author" name="author">
+            </div>
+        </div>
 
-        <label for="datePublished">Date Published:</label><br>
-        <input type="date" id="datePublished" name="datePublished"><br>
+        <div class="elemRow">
+            <div class="field">
+                <label for="Genre">Genre:</label>
+                <input type="text" id="Genre" name="Genre">
+            </div>
 
-        <label for="ISBN">ISBN:</label><br>
-        <input type="text" id="ISBN" name="ISBN"><br>
+            <div class="field">
+                <label for="ISBN">ISBN:</label>
+                <input type="text" id="ISBN" name="ISBN">
+            </div>
+        </div>
 
-        <label for="Genre">Genre:</label><br>
-        <input type="text" id="Genre" name="Genre"><br>
+        <div class="elemRow">
+            <div class="field">
+                <label for="datePublished">Date Published:</label>
+                <input type="date" id="datePublished" name="datePublished">
+            </div>
+        </div>
 
-        <input type="submit" id="bookSubmit" value="Submit">
+        <input type="submit" id="bookSubmit" value="Add Book">
     </form>
 
     <h2>Filters</h2>
-    <p>Enter filters here to search for books!</p>
+    <p>Enter filters here to search for specific books!</p>
 
     <form>
-        <label for="query">Query:</label><br>
-        <input type="text" id="query" name="query"><br>
+        <div class="elemRow">
+            <div class="field">
+                <label for="query">Query:</label>
+                <input type="text" id="query" name="query">
+            </div>
 
-        <label for="filterType">Filter by:</label>
-        <select id="filterType" name="filterType">
-            <option value="title">Title</option>
-            <option value="genre">Genre</option>
-            <option value="ISBN">ISBN</option>
-            <option value="author">Author</option>
-            <option value="ID">ID</option>
-        </select><br>
+            <div class="field">
+                <label for="filterType">Filter by:</label>
+                <select id="filterType" name="filterType">
+                    <option value="ID">ID</option>
+                    <option value="title">Title</option>
+                    <option value="author">Author</option>
+                    <option value="ISBN">ISBN</option>
+                    <option value="genre">Genre</option>
+                </select>
+            </div>
+        </div>
 
-        <input type="submit" id="querySubmit" value="Submit">
     </form>
 
-    <br>
-
-    <input type="submit" id="clearFilters" value="Clear Filters">
-
-    <h3>Download Data:</h3>
-
-    <input type="submit" id="getCSV" value="Download CSV File">
+    <div class="field">
+        <input type="submit" id="querySubmit" value="Submit Filter">
+        <input type="submit" id="clearFilters" value="Clear Filters">
+    </div>
 
     <br>
 
-    <h2>Results</h2>
+    <h2>Books</h2>
 
-    <table>
+    <table class="table">
         <tr>
             <th>ID</th>
             <th>Title</th>
@@ -67,11 +87,22 @@
             <th>Date Published</th>
             <th>ISBN</th>
             <th>Genre</th>
+        </tr>
+    </table>
+
+    <br>
+
+    <input type="submit" id="getCSV" value="Download CSV File">
 
 
         <script src="/socket.io/socket.io.js"></script>
         <script>
-            
+            addBook(1, "The Great Gatsby", "F. Scott Fitzgerald", "1925-04-10", "9780743273565", "Fiction");
+            addBook(2, "The Catcher in the Rye", "J.D. Salinger", "1951-07-16", "9780316769488", "Fiction");
+            addBook(3, "To Kill a Mockingbird", "Harper Lee", "1960-07-11", "9780061120084", "Fiction");
+            addBook(4, "1984", "George Orwell", "1949-06-08", "9780451524935", "Fiction");
+            addBook(5, "Animal Farm", "George Orwell", "1945-08-17", "9780451526342", "Fiction");
+
             const socket = io.connect();
 
             socket.on("connect", () => {
