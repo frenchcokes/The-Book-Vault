@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Storage</title>
+</head>
+<body>
+    <h1>Welcome to Book Storage</h1>
+    <p>This is a simple HTML page for storing book information!</p>
+
+    <form>
+        <label for="title">Title:</label><br>
+        <input type="text" id="title" name="title"><br>
+
+        <label for="author">Author:</label><br>
+        <input type="text" id="author" name="author"><br>
+
+        <label for="datePublished">Date Published:</label><br>
+        <input type="text" id="datePublished" name="datePublished"><br>
+
+        <label for="ISBN">ISBN:</label><br>
+        <input type="text" id="ISBN" name="ISBN"><br>
+
+        <label for="Genre">Genre:</label><br>
+        <input type="text" id="Genre" name="Genre"><br>
+
+        <input type="submit" id="bookSubmit" value="Submit">
+    </form>
+
+    <h2>Filters</h2>
+    <p>Enter filters here to search for books!</p>
+
+    <form>
+        <label for="query">Query:</label><br>
+        <input type="text" id="query" name="query"><br>
+
+        <label for="filterType">Filter by:</label>
+        <select id="filterType" name="filterType">
+            <option value="title">Title</option>
+            <option value="genre">Genre</option>
+            <option value="ISBN">ISBN</option>
+            <option value="author">Author</option>
+        </select><br>
+
+        <input type="submit" id="querySubmit" value="Submit">
+    </form>
+
+    <br>
+
+    <input type="submit" id="clearFilters" value="Clear Filters">
+
+    <br>
+
+    <input type="submit" value="Download CSV File">
+
+    <br>
+
+    <h2>Results</h2>
+
+    <table>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Date Published</th>
+            <th>ISBN</th>
+            <th>Genre</th>
+
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            
+            const socket = io.connect();
+
+            socket.on("connect", () => {
+                console.log("Connected to server!");
+            });
+            
+            socket.on("sendBooks", (data) => {
+                clearBooks();
+                data.forEach(book => {
+                    addBook(book.title, book.author, book.datePublished, book.ISBN, book.genre);
+                });
+                console.log("Received books from server!");
+            });
+
+            document.getElementById("bookSubmit").addEventListener("click", function(event) {
+                event.preventDefault();
+                
+                const title = document.getElementById("title").value;
+                const author = document.getElementById("author").value;
+                const datePublished = document.getElementById("datePublished").value;
+                const ISBN = document.getElementById("ISBN").value;
+                const genre = document.getElementById("Genre").value;
+
+                const book = {
+                    title: title,
+                    author: author,
+                    datePublished: datePublished,
+                    ISBN: ISBN,
+                    genre: genre
+                };
+
+                socket.emit("addBook", book);
+                addBook(title, author, datePublished, ISBN, genre);
+                console.log("Sent book to server!");
+            });
+
+            document.getElementById("clearFilters").addEventListener("click", function(event) {
+                event.preventDefault();
+                clearFilters();
+                getBooks();
+            });
+
+            document.getElementById("querySubmit").addEventListener("click", function(event) {
+                event.preventDefault();
+
+                const query = document.getElementById("query").value;
+                const filterType = document.getElementById("filterType").value;
+
+                const filters = {
+                    query: query,
+                    filterType: filterType
+                };
+
+                socket.emit("queryBooks", filters);
+                console.log("Queried books!");
+            });
+
+            function addBook(title, author, datePublished, ISBN, genre) {
+                const table = document.querySelector("table");
+                const newRow = table.insertRow();
+
+                const titleCell = newRow.insertCell(0);
+                const authorCell = newRow.insertCell(1);
+                const datePublishedCell = newRow.insertCell(2);
+                const ISBNCell = newRow.insertCell(3);
+                const genreCell = newRow.insertCell(4);
+
+                titleCell.textContent = title;
+                authorCell.textContent = author;
+                datePublishedCell.textContent = datePublished;
+                ISBNCell.textContent = ISBN;
+                genreCell.textContent = genre;
+            }
+
+            function getBooks() {
+                socket.emit("getBooks");
+                console.log("Requested books from server!");
+            }
+
+            function clearBooks() {
+                const table = document.querySelector("table");
+                while (table.rows.length > 1) {
+                    table.deleteRow(1);
+                }
+            }
+
+            function clearFilters() {
+                document.getElementById("query").value = "";
+                document.getElementById("filterType").value = "title";
+            }
+        </script>
+</body>
+</html>
