@@ -1,5 +1,8 @@
 # The Book Vault
 
+## Feature Demo
+https://youtu.be/dqM0VFrJVtM
+
 ## Setup
 1. Install Node.js.
 2. Run this to import project dependencies.
