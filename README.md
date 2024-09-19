@@ -1,6 +1,6 @@
-#The Book Vault
+# The Book Vault
 
-##Setup
+## Setup
 1. Install Node.js.
 2. Run this to import project dependencies.
 ```
@@ -17,10 +17,10 @@ npm start
 ```
 4. visit localhost:3000 and the site should run!
 
-##Documentation
-###Adding a book
+## Documentation
+### Adding a book
 Type book details into each field in the add books category and press "Add Book" to add the book to the database.
-###Filtering
+### Filtering
 Enter a string into the Query field, and select what to filter by. This will determine what the query is compared to for each entry. Then, press "Submit Filter" to get the filtered results.
-###Download the csv data
+### Download the csv data
 Click the "Download CSV File" button which is located beneath the book table.
