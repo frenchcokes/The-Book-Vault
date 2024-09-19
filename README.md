@@ -24,3 +24,7 @@ Type book details into each field in the add books category and press "Add Book"
 Enter a string into the Query field, and select what to filter by. This will determine what the query is compared to for each entry. Then, press "Submit Filter" to get the filtered results.
 ### Download the csv data
 Click the "Download CSV File" button which is located beneath the book table.
+
+## Challenges
+I had some issues with Figma and exporting the HTML and CSS file, so I had to scrap that design and create my own. The result is the current version.
+The hardest design decision was whether to put the project in 1 column as it now, or two columns which would allow users to view more at once. Ultimately I decided for the column so it would look better on mobile devices.
