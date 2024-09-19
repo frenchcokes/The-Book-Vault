@@ -49,7 +49,7 @@ connection.connect((err) => {
         "datepublished VARCHAR(255), " +
         "isbn VARCHAR(255))", (err, results) => {
         if (err) {
-            console.error('Error creating table: ', err.stack);
+            console.error('Error creating table');
             return;
         }
         console.log('Table created successfully');
@@ -67,8 +67,8 @@ connection.connect((err) => {
                 title: book.title,
                 author: book.author,
                 genre: book.genre,
-                datepublished: book.datepublished,
-                isbn: book.isbn
+                datePublished: book.datepublished,
+                ISBN: book.isbn
             });
         });
     });
@@ -101,7 +101,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('addBook', (book) => {
-        connection.query("INSERT INTO books (title, author, genre, datepublished, isbn) VALUES (?, ?, ?, ?, ?)", [book.title, book.author, book.genre, book.datepublished, book.isbn], (err, results) => {
+        connection.query("INSERT INTO books (title, author, genre, datepublished, isbn) VALUES (?, ?, ?, ?, ?)", [book.title, book.author, book.genre, book.datePublished, book.ISBN], (err, results) => {
             if (err) {
                 console.log('Error inserting book');
             }
@@ -114,16 +114,16 @@ io.on('connection', (socket) => {
         filteredBooks = [];
         switch (filters.filterType) {
             case 'title':
-            filteredBooks = books.filter(book => book.title.includes(filters.query));
+            filteredBooks = books.filter(book => book.title.toLowerCase().includes(filters.query.toLowerCase()));
             break;
             case 'genre':
-            filteredBooks = books.filter(book => book.genre.includes(filters.query));
+            filteredBooks = books.filter(book => book.genre.toLowerCase().includes(filters.query.toLowerCase()));
             break;
             case 'ISBN':
-            filteredBooks = books.filter(book => book.isbn.includes(filters.query));
+            filteredBooks = books.filter(book => book.isbn.toLowerCase().includes(filters.query.toLowerCase()));
             break;
             case 'author':
-            filteredBooks = books.filter(book => book.author.includes(filters.query));
+            filteredBooks = books.filter(book => book.author.toLowerCase().includes(filters.query.toLowerCase()));
             break;
             case 'ID':
             filteredBooks = books.filter(book => String(book.ID).includes(filters.query));

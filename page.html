@@ -3,13 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Storage</title>
-    <link rel="stylesheet" href="style.css">
+    <title>The Book Vault</title>
+    <style>
+            body {
+                color: black;
+                text-align: center;
+            }
+
+            html {
+                display: table;
+                margin: auto;
+            }
+
+            body {
+                color: #0A5A8E;
+                background-color: #C0D7FE;
+                display: table-cell;
+                vertical-align: middle;
+            }
+
+            input[type="submit"] {
+                background-color: #89B8F5;
+            }
+
+            .elemRow {
+                width: 500px;
+                margin: 20px auto;
+
+                display: flex;
+                justify-content: space-evenly; 
+            }
+
+            .field {
+                display: inline-block;
+            }
+
+            .table {
+                background-color: white;
+                margin: 0 auto;
+            }
+    </style>
 </head>
 <body>
-    <h1>Welcome to Bookeeping!</h1>
+    <h1>The Book Vault</h1>
     <h2>Add Books</h2>
-    <p>Add your books and I'll keep track!</p>
+    <p>Add your books and I'll keep them safe!</p>
 
     <form>
         <div class="elemRow">
@@ -97,12 +135,6 @@
 
         <script src="/socket.io/socket.io.js"></script>
         <script>
-            addBook(1, "The Great Gatsby", "F. Scott Fitzgerald", "1925-04-10", "9780743273565", "Fiction");
-            addBook(2, "The Catcher in the Rye", "J.D. Salinger", "1951-07-16", "9780316769488", "Fiction");
-            addBook(3, "To Kill a Mockingbird", "Harper Lee", "1960-07-11", "9780061120084", "Fiction");
-            addBook(4, "1984", "George Orwell", "1949-06-08", "9780451524935", "Fiction");
-            addBook(5, "Animal Farm", "George Orwell", "1945-08-17", "9780451526342", "Fiction");
-
             const socket = io.connect();
 
             socket.on("connect", () => {
@@ -141,7 +173,7 @@
                     alert("Please fill in all fields");
                     return;
                 }
-                else if (isNaN(ISBN) && ISBN.length == 13){
+                else if (isNaN(ISBN) || ISBN.length !== 13){
                     alert("ISBN must be a number, have no letters, and be 13 digits long.");
                     return;
                 }
